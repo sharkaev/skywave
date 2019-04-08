@@ -1,0 +1,50 @@
+version: '3.2'
+services:
+  postgres:
+    image: 'postgres:alpine'
+    ports:
+       - 5432:5432
+    environment:
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'telemetry'
+    volumes:
+      - type: bind
+        source: ./client/init/
+        target: /docker-entrypoint-initdb.d/
+      # - ./client/localDB:/var/lib/postgresql/data
+  mqtt:
+      image: toke/mosquitto
+      network_mode: bridge
+      container_name: mqtt
+      expose:
+        - 1883
+      ports:
+        - 1883:1883
+      restart: unless-stopped
+  clickhouse:
+      image: yandex/clickhouse-server
+      expose:
+        - 8123
+        - 9000
+      ports:
+        - 8123:8123
+        - 9000:9000
+      volumes:
+        - ./server/db/init:/docker-entrypoint-initdb.d
+      # volumes:
+      #     - ./data/clickhouse/data:/var/lib/clickhouse
+  grafana-storage:
+      image: busybox:latest
+      volumes:
+        - /var/lib/grafana
+  grafana:
+    image: qxip/clickhouse-grafana
+    ports:
+     - "3000:3000"
+    volumes:
+      - /var/lib/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel,vertamedia-clickhouse-datasource"
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "admin"

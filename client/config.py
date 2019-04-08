@@ -1,0 +1,14 @@
+POSTGRES_DB = 'telemetry'
+POSTGRES_HOST = 'localhost'
+POSTGRES_PORT = 5432
+POSTGRES_USER = 'user'
+POSTGRESS_PASSWORD = 'password'
+POSTGRESS_CONNECTION_STRING = f'postgresql://{POSTGRES_USER}:{POSTGRESS_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
+MQTT_BROKER_HOST = "localhost"
+MQTT_PORT = 1883
+EMULATOR_PORTS = {
+    'temperature':9090,
+    'pressure':9091,
+    'height':9092
+}
+CLIENT_ID = 15
